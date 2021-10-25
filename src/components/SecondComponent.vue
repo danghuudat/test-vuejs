@@ -35,7 +35,8 @@
   </div>
 </template>
 <script>
-import axios from 'axios'
+import apiService from '../core/services/api.service'
+
 export default {
   data () {
     return {
@@ -43,7 +44,13 @@ export default {
       data: [],
       page: 1,
       last_page: 1,
-      hocluc: this.$route.params.hocluc
+      hocluc: this.$route.params.hocluc,
+      sinhvien: {
+        id: null,
+        name: null,
+        ho: null,
+        hocluc: null
+      }
     }
   },
   watch: {
@@ -59,7 +66,8 @@ export default {
   },
   methods: {
     getListSinhVien: function () {
-      axios
+      // apiService.init();
+      apiService
         .get('http://127.0.0.1:8000/get-list?page=' + this.page + '&&hocluc=' + this.hocluc)
         .then(response => {
           this.last_page = response.data.last_page
@@ -88,12 +96,7 @@ export default {
       }
     },
     upHocluc: function () {
-      // this.$router.push({
-      //   path: '/component/1',
-      //   query: { test: 'test' }
-      // })
-      // console.log(this.$route.params.hocluc)
-      if (this.hocluc == 5) {
+      if (this.hocluc === 5) {
         alert('không thể học giỏi hơn được nữa')
         return 0
       }
@@ -102,7 +105,7 @@ export default {
       this.$router.push({ name: 'SecondComponent', params: { hocluc: this.hocluc } })
     },
     downHocluc: function () {
-      if (this.hocluc == 1) {
+      if (this.hocluc === 1) {
         alert('không thể học ngu hơn được nữa')
         return 0
       }
