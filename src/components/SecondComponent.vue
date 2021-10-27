@@ -7,11 +7,12 @@
       <thead>
       <tr>
         <th>id</th>
-        <th>name</th>
-        <th>email</th>
-        <th>ho</th>
-        <th>lop</th>
-        <th v-if="hocluc != 0">hocluc</th>
+        <th>Tên</th>
+        <th>Email</th>
+        <th>Họ</th>
+        <th>Lớp</th>
+        <th>Học lực</th>
+        <th>Action</th>
       </tr>
       </thead>
       <tbody>
@@ -22,15 +23,25 @@
         <td>{{item.ho}}</td>
         <td>{{item.lop}}</td>
         <td>{{item.hocluc.name}}</td>
+        <td> <b-button id="show-btn" @click="showModal(item.id)">Open Modal</b-button> </td>
       </tr>
       </tbody>
     </table>
+    <b-modal ref="my-modal" hide-footer title="Using Component Methods">
+      <div class="d-block text-center">
+        <h3>Hello From My Modal!</h3>
+      </div>
+<!--      <b-button class="mt-3" variant="outline-danger" block @click="hideModal">Close Me</b-button>
+      <b-button class="mt-2" variant="outline-warning" block @click="toggleModal">Toggle Me</b-button>-->
+      <b-button class="mt-3" variant="outline-danger" block >Close Me</b-button>
+      <b-button class="mt-2" variant="outline-warning" block>Toggle Me</b-button>
+    </b-modal>
     <div>
       <button @click="previousPage()">Pevious page</button>
       <button @click="nextPage()">Next page</button>
-      <button @click="upHocluc()">Up hoc luc</button>
-      <button @click="downHocluc()">Down hoc luc</button>
-      <button @click="showAllHocluc()">Show all hoc luc</button>
+      <button @click="upHocluc()">Tăng học lực</button>
+      <button @click="downHocluc()">Giảm học lực</button>
+      <button @click="showAllHocluc()">Show tất cả học lực</button>
     </div>
   </div>
 </template>
@@ -49,7 +60,8 @@ export default {
         id: null,
         name: null,
         ho: null,
-        hocluc: null
+        hocluc: null,
+        email: null
       }
     }
   },
@@ -68,7 +80,7 @@ export default {
     getListSinhVien: function () {
       // apiService.init();
       apiService
-        .get('http://127.0.0.1:8000/get-list?page=' + this.page + '&&hocluc=' + this.hocluc)
+        .get('api/auth/get-list?page=' + this.page + '&&hocluc=' + this.hocluc)
         .then(response => {
           this.last_page = response.data.last_page
           this.data = response.data.data
@@ -114,14 +126,25 @@ export default {
       this.$router.push({ name: 'SecondComponent', params: { hocluc: this.hocluc } })
     },
     showAllHocluc: function () {
-      // this.$router.push({
-      //   path: '/component/1',
-      //   query: { test: 'test' }
-      // })
-      // console.log(this.$route.params.hocluc)
       this.hocluc = 0
       this.page = 1
       this.$router.push({ name: 'SecondComponent', params: { hocluc: this.hocluc } })
+    },
+    showModal: function (id){
+      alert(id);
+      const self = this;
+      this.data.forEach(function (ele, index) {
+
+        if(ele.id === id){
+
+          console.log(self.sinhvien)
+          self.sinhvien.id = id;
+          self.sinhvien.name = ele.name;
+          self.sinhvien.ho = ele.ho
+          self.sinhvien.email = ele.email
+          self.sinhvien.hocluc = ele.hocluc.id
+        }
+      });
     }
   }
 }

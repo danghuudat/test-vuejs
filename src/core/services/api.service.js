@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import axios from 'axios';
+import JwtService from "./jwt.service";
+
 import VueAxios from "vue-axios";
-//import JwtService from "@/core/services/jwt.service";
-import { ENV } from "@/core/config/env";
 
 /**
  * Service to call HTTP request via Axios
@@ -12,10 +12,8 @@ class ApiService {
   $http = null
 
   init = (options) => {
-    console.log(this)
-    console.log(typeof this)
     options = options || {}
-    const baseURL = options.url ? options.url : ENV.API_URL
+    const baseURL = options.url ? options.url : "http://localhost:8000/"
     Vue.use(VueAxios, axios)
     /*
     if (ENV.API_MODE === 'json') {
@@ -34,12 +32,12 @@ class ApiService {
   /**
    * Set the default HTTP request headers
    */
-  /*setHeader = () => {
+  setHeader = () => {
     this.$http.defaults.headers.common[
       "Authorization"
       ] = `Bearer ${JwtService.getToken()}`;
     this.$http.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
-  };*/
+  };
 
   query = (resource, params) => {
     const options = this._getOptions()
@@ -117,9 +115,6 @@ class ApiService {
    */
   _getUri = (resource, slug= '') => {
     let uri = (slug != '' && slug != undefined )? `${resource}/${slug}` : resource
-    if (ENV.API_MODE === 'json') {
-      uri = '/json/' + `${uri}` + '.json'
-    }
     return uri
   };
   /**
